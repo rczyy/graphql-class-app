@@ -5,9 +5,8 @@ import bcrypt from "bcrypt";
 
 export const resolvers: Resolvers = {
   Query: {
-    users: async (_: any, __: any, { User }: Context) => {
-      return await User.find();
-    },
+    me: async (_: any, __: any, { req, User }: Context) =>
+      await User.findById(req.session.uid),
   },
   Mutation: {
     registerUser: async (
