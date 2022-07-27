@@ -1,11 +1,15 @@
 import * as yup from "yup";
 import { Form, Formik } from "formik";
 import { FormControl } from "../components/Form/FormControl";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { useRegisterUserMutation } from "../graphql/generated/schema";
+import { FormError } from "../components/Form/FormError";
 
 interface RegisterProps {}
 
 export const Register = (_: RegisterProps): JSX.Element => {
+  const [registerUser, { data, loading }] = useRegisterUserMutation();
+
   const initialValues = {
     name: "",
     email: "",
@@ -34,6 +38,10 @@ export const Register = (_: RegisterProps): JSX.Element => {
       .oneOf([yup.ref("password")], "Password doesn't match."),
   });
 
+  if (data?.registerUser.user) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <main className="flex items-stretch min-h-screen max-w-7xl m-auto pt-16 md:pt-20">
       <section className="flex w-full">
@@ -42,7 +50,13 @@ export const Register = (_: RegisterProps): JSX.Element => {
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={(values) => console.log(values)}
+            onSubmit={async ({ confirmPassword, ...values }) => {
+              await registerUser({
+                variables: {
+                  user: values,
+                },
+              });
+            }}
           >
             {({ dirty, isValid }) => (
               <Form>
@@ -56,11 +70,19 @@ export const Register = (_: RegisterProps): JSX.Element => {
                 />
                 <button
                   type="submit"
-                  className="btn bg-blue-600 text-white normal-case w-full mt-8 border-0 hover:bg-blue-500 disabled:bg-blue-400 disabled:text-white"
+                  className={`btn bg-blue-600 text-white normal-case w-full mt-8 border-0 hover:bg-blue-500 disabled:bg-blue-400 disabled:text-white ${
+                    loading && "loading"
+                  }`}
                   disabled={!dirty || !isValid}
                 >
                   Sign up
                 </button>
+                {data?.registerUser.errors &&
+                  data.registerUser.errors.map((error) => (
+                    <div className="mt-2">
+                      <FormError>{error.message}</FormError>
+                    </div>
+                  ))}
               </Form>
             )}
           </Formik>
