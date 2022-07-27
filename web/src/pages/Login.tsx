@@ -58,7 +58,7 @@ export const Login = (_: LoginProps): JSX.Element => {
                 </button>
                 {data?.loginUser.errors &&
                   data.loginUser.errors.map((error) => (
-                    <div className="mt-2">
+                    <div key={error.field} className="mt-2">
                       <FormError>{error.message}</FormError>
                     </div>
                   ))}

@@ -79,7 +79,7 @@ export const Register = (_: RegisterProps): JSX.Element => {
                 </button>
                 {data?.registerUser.errors &&
                   data.registerUser.errors.map((error) => (
-                    <div className="mt-2">
+                    <div key={error.field} className="mt-2">
                       <FormError>{error.message}</FormError>
                     </div>
                   ))}

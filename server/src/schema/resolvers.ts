@@ -13,7 +13,7 @@ export const resolvers: Resolvers = {
     registerUser: async (
       _: any,
       { user }: { user: RegisterInput },
-      { User }: Context
+      { req, User }: Context
     ) => {
       const newUser = new User({
         name: user.name,
@@ -39,12 +39,14 @@ export const resolvers: Resolvers = {
         };
       }
 
+      req.session.uid = newUser._id;
+
       return { user: newUser };
     },
     loginUser: async (
       _: any,
       { user }: { user: LoginInput },
-      { User }: Context
+      { req, User }: Context
     ) => {
       const existingUser = await User.findOne({ email: user.email });
 
@@ -75,6 +77,7 @@ export const resolvers: Resolvers = {
         };
       }
 
+      req.session.uid = existingUser._id;
       return { user: existingUser };
     },
   },
