@@ -43,7 +43,7 @@ const start = async () => {
   );
 
   await server.start();
-  server.applyMiddleware({ app });
+  server.applyMiddleware({ app, cors: false });
 
   app.listen(port, () => {
     console.log(
