@@ -4,7 +4,7 @@ generates:
     config:
       useIndexSignature: true
       mappers:
-        User: ./src/types.d.ts#UserModel
+        User: ./types#UserModel
     plugins:
       - typescript
       - typescript-resolvers
