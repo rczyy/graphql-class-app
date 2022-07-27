@@ -21,7 +21,12 @@ const start = async () => {
     csrfPrevention: true,
   });
 
-  app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
+  app.use(
+    cors({
+      origin: ["https://studio.apollographql.com", "http://localhost:3000"],
+      credentials: true,
+    })
+  );
 
   app.use(
     session({
@@ -38,7 +43,7 @@ const start = async () => {
   );
 
   await server.start();
-  server.applyMiddleware({ app, cors: false });
+  server.applyMiddleware({ app });
 
   app.listen(port, () => {
     console.log(
