@@ -2,12 +2,13 @@ import * as yup from "yup";
 import { Link, Navigate } from "react-router-dom";
 import { Form, Formik } from "formik";
 import { FormControl } from "../components/Form/FormControl";
-import { useLoginUserMutation } from "../graphql/generated/schema";
+import { useLoginUserMutation, useMeQuery } from "../graphql/generated/schema";
 import { FormError } from "../components/Form/FormError";
 
 interface LoginProps {}
 
 export const Login = (_: LoginProps): JSX.Element => {
+  const { data: meData } = useMeQuery();
   const [loginUser, { data, loading }] = useLoginUserMutation();
 
   const initialValues = {
@@ -23,7 +24,7 @@ export const Login = (_: LoginProps): JSX.Element => {
     password: yup.string().required("Password is required."),
   });
 
-  if (data?.loginUser.user) {
+  if (data?.loginUser.user || meData?.me) {
     return <Navigate to="/" />;
   }
 

@@ -2,12 +2,16 @@ import * as yup from "yup";
 import { Form, Formik } from "formik";
 import { FormControl } from "../components/Form/FormControl";
 import { Link, Navigate } from "react-router-dom";
-import { useRegisterUserMutation } from "../graphql/generated/schema";
+import {
+  useMeQuery,
+  useRegisterUserMutation,
+} from "../graphql/generated/schema";
 import { FormError } from "../components/Form/FormError";
 
 interface RegisterProps {}
 
 export const Register = (_: RegisterProps): JSX.Element => {
+  const { data: meData } = useMeQuery();
   const [registerUser, { data, loading }] = useRegisterUserMutation();
 
   const initialValues = {
@@ -38,7 +42,7 @@ export const Register = (_: RegisterProps): JSX.Element => {
       .oneOf([yup.ref("password")], "Password doesn't match."),
   });
 
-  if (data?.registerUser.user) {
+  if (data?.registerUser.user || meData?.me) {
     return <Navigate to="/" />;
   }
 
